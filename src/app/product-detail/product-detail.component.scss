@@ -8,6 +8,15 @@ td {
   font-size: 18px;
 }
 
-h2{
+h2, button{
   margin-left: 25px;
+}
+
+button{
+  padding: 15px 35px;
+  background-color: dodgerblue;
+  color: white;
+  font-weight: bold;
+  border-radius: 17%;
+  font-size: 18px;
 }
