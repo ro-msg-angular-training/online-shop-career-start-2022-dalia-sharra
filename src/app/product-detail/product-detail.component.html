@@ -1,3 +1,4 @@
+<div *ngIf="product">
 <h2>Product: {{product.name}}</h2>
 <table>
   <tr>
@@ -17,5 +18,6 @@
     <td>{{product.description}}</td>
   </tr>
 </table>
-<h2> Selected product id: {{productId}}</h2>
-<button (click) = addToCart()>ADD</button>
+<button id="add-btn" (click) = addToCart()>ADD</button>
+<button id="delete-btn" (click) = deleteProduct()>DELETE</button>
+</div>

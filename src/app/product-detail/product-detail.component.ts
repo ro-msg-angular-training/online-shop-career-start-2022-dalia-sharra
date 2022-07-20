@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Product} from "../product";
+import {Product} from "../model/product";
 import {ActivatedRoute} from "@angular/router";
+import {ProductsService} from "../services/products.service";
+import { Location } from '@angular/common';
+import {OrderService} from "../services/order.service";
 
 @Component({
   selector: 'app-product-detail',
@@ -9,20 +12,36 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ProductDetailComponent implements OnInit {
 
-  product : Product = {id : 0, name: "Product1", category: "devices", image: "image", price: 300, description: "description1"};
-  productId: number | undefined;
+  product : Product | undefined;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location, private orderService: OrderService) { }
 
   ngOnInit(): void {
     this.getProduct();
   }
 
   getProduct(): void {
-    this.productId = Number(this.route.snapshot.paramMap.get('id'));
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.productService.getProduct(id)
+      .subscribe((product) => {this.product = product;},
+      (error) => {console.log(error);}
+    )
   }
 
   addToCart() {
+    if(this.product)
+      this.orderService.updateOrder(this.product);
     alert("Product added to the shopping cart!");
+  }
+
+  deleteProduct() {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.productService.deleteProduct(id)
+      .subscribe(() => {
+          alert("Product deleted successfully!");
+        },
+        (error) => {console.log(error);}
+      )
+    this.location.back();
   }
 }

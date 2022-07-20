@@ -12,10 +12,18 @@ h2, button{
   margin-left: 25px;
 }
 
-button{
+#add-btn{
   padding: 15px 35px;
   background-color: dodgerblue;
   color: white;
+  font-weight: bold;
+  border-radius: 17%;
+  font-size: 18px;
+}
+
+#delete-btn{
+  padding: 15px 25px;
+  background-color: #EE5656;
   font-weight: bold;
   border-radius: 17%;
   font-size: 18px;
