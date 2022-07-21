@@ -29,7 +29,7 @@ export class ShoppingCartComponent implements OnInit {
     if (this.order) {
       for (let index in this.order.products) {
         prod = this.order.products[index];
-        this.productService.getProduct(prod.productId).subscribe(
+        this.productService.getProductById(prod.productId).subscribe(
           (product) => {
             this.orderedProducts.push({
               name: product.name,

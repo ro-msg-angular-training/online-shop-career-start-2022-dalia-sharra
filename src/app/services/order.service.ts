@@ -45,6 +45,5 @@ export class OrderService {
     } else {
       this.order = {customer: "doej", products: [{productId: product.id, quantity: 1}]}
     }
-    console.log(this.order);
   }
 }

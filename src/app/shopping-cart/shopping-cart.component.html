@@ -1,6 +1,6 @@
 <div>
 <h1>Shopping Cart</h1>
-<button (click)="sendOrder()" >CHECKOUT</button>
+<button (click)="sendOrder()" [disabled]="orderedProducts.length == 0">CHECKOUT</button>
 </div>
 <table>
   <tr id="head-row">

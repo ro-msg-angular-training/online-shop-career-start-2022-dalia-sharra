@@ -1,0 +1,21 @@
+<h1>Add New Product</h1>
+<form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+
+  <label for="name">Name: </label>
+  <input id="name" type="text" formControlName="name">
+  <br>
+  <label for="category">Category: </label>
+  <input id="category" type="text" formControlName="category">
+  <br>
+  <label for="image">Image: </label>
+  <input id="image" type="text" formControlName="image">
+  <br>
+  <label for="price">Price: </label>
+  <input id="price" type="text" formControlName="price">
+  <br>
+  <input id="description" type="text" formControlName="description">
+
+  <br>
+  <button type="submit" [disabled]="!addForm.valid">SAVE</button>
+  <button (click)="refreshForm()">CANCEL</button>
+</form>

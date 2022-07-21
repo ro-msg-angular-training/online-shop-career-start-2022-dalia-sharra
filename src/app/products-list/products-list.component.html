@@ -1,6 +1,7 @@
 <div>
   <h1>Products</h1>
-  <button routerLink="/shopping-cart"> CART </button>
+  <button routerLink="/shopping-cart" [disabled]="!isCostumer">CART</button>
+  <button routerLink="/add" [disabled]="!isAdmin">ADD</button>
 </div>
 <br>
 <table>

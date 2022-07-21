@@ -1,0 +1,21 @@
+<h1 *ngIf="product">Edit: {{product.name}}</h1>
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+
+  <label for="name">Name: </label>
+  <input id="name" type="text" formControlName="name">
+  <br>
+  <label for="category">Category: </label>
+  <input id="category" type="text" formControlName="category">
+  <br>
+  <label for="image">Image: </label>
+  <input id="image" type="text" formControlName="image">
+  <br>
+  <label for="price">Price: </label>
+  <input id="price" type="text" formControlName="price">
+  <br>
+  <input id="description" type="text" formControlName="description">
+
+  <br>
+  <button type="submit" [disabled]="!editForm.valid">SAVE</button>
+  <button (click)="setForm()">CANCEL</button>
+</form>
