@@ -33,9 +33,7 @@ export class LoginComponent implements OnInit {
       this.loginService.login(cred
       ).subscribe(
         (response) => {
-          console.log(response);
           this.router.navigateByUrl('products');
-          this.user = response;
         },
         () => {
           alert("Login unsuccessful! Please Retry!");
