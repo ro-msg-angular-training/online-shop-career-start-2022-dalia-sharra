@@ -1,0 +1,20 @@
+<div>
+  <h1>Products</h1>
+  <button routerLink="/shopping-cart" [disabled]="!isCostumer">CART</button>
+  <button routerLink="/add" [disabled]="!isAdmin">ADD</button>
+</div>
+<br>
+<table>
+  <tr id="head-row">
+    <td>Category</td>
+    <td>Product Name</td>
+    <td>Price</td>
+    <td></td>
+  </tr>
+  <tr *ngFor="let product of products">
+    <td>{{product.category}}</td>
+    <td>{{product.name}}</td>
+    <td>{{product.price}} RON</td>
+    <td id="detail-btn"> <button routerLink="/detail/{{product.id}}"> Details</button></td>
+  </tr>
+</table>

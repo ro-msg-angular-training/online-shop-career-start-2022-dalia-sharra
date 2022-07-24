@@ -1,0 +1,20 @@
+<div>
+<h1>Shopping Cart</h1>
+<button (click)="sendOrder()" [disabled]="orderedProducts.length == 0">CHECKOUT</button>
+</div>
+<table>
+  <tr id="head-row">
+    <td>Category</td>
+    <td>Product Name</td>
+    <td>Price</td>
+    <td>Quantity</td>
+    <td></td>
+  </tr>
+  <tr *ngFor="let product of orderedProducts">
+    <td>{{product.category}}</td>
+    <td>{{product.name}}</td>
+    <td>{{product.price}} RON</td>
+    <td>{{product.quantity}}</td>
+    <td> </td>
+  </tr>
+</table>

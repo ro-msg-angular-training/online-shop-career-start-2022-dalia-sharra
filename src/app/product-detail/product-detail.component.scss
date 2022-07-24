@@ -1,0 +1,30 @@
+.desc{
+  color: grey;
+  text-align: right;
+}
+
+td {
+  padding: 12px 20px 12px;
+  font-size: 18px;
+}
+
+h2, button{
+  margin-left: 25px;
+}
+
+#add-btn, #edit-btn{
+  padding: 15px 35px;
+  background-color: dodgerblue;
+  color: white;
+  font-weight: bold;
+  border-radius: 17%;
+  font-size: 18px;
+}
+
+#delete-btn{
+  padding: 15px 25px;
+  background-color: #EE5656;
+  font-weight: bold;
+  border-radius: 17%;
+  font-size: 18px;
+}

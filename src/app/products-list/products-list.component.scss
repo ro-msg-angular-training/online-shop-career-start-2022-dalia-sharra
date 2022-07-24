@@ -1,0 +1,24 @@
+div, table{
+  margin-left: 25px;
+}
+table {
+  border-style: solid;
+  border-width: 4px;
+}
+
+td {
+  padding: 10px 60px 10px 5px;
+  border: 1px solid black;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+
+#head-row{
+  font-weight: bold;
+}
+
+#detail-btn{
+  padding:0;
+  text-align: center;
+  vertical-align: middle;
+}
