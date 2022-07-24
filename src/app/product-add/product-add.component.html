@@ -17,5 +17,5 @@
 
   <br>
   <button type="submit" [disabled]="!addForm.valid">SAVE</button>
-  <button (click)="refreshForm()">CANCEL</button>
+  <button (click)="addForm.reset()">CANCEL</button>
 </form>

@@ -3,6 +3,9 @@ import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {Product} from "../model/product";
 import {ProductsService} from "../services/products.service";
 import {ActivatedRoute} from "@angular/router";
+import {Subscription} from "rxjs";
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-product-edit',
@@ -21,7 +24,9 @@ export class ProductEditComponent implements OnInit {
 
   product : Product | undefined;
 
-  constructor(private route: ActivatedRoute, private productService: ProductsService) { }
+  private getProductSubscription: Subscription | undefined;
+
+  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location) { }
 
   ngOnInit(): void {
     this.getProductById();
@@ -29,18 +34,18 @@ export class ProductEditComponent implements OnInit {
 
   getProductId() : number
   {
-    return Number(this.route.snapshot.paramMap.get('id'));
+    return parseInt(<string>this.route.snapshot.paramMap.get('id'));
   }
 
-  getProductById()
+  getProductById() : void
   {
-    this.productService.getProductById(this.getProductId())
+    this.getProductSubscription = this.productService.getProductById(this.getProductId())
       .subscribe((product) => {this.product = product; this.setForm();},
         (error) => {console.log(error);}
       )
   }
 
-  setForm()
+  setForm() : void
   {
     if(this.product)
     {
@@ -48,25 +53,33 @@ export class ProductEditComponent implements OnInit {
         name: this.product.name,
         category: this.product.category,
         image: this.product.image,
-        price: String(this.product.price),
+        price: this.product.price.toString(),
         description: this.product.description
 
       });
     }
   }
 
-  onSubmit() {
-    let updatedProduct = {
+  onSubmit() : void {
+    const updatedProduct = {
       id: this.getProductId(),
       name: this.editForm.value.name,
       category: this.editForm.value.category,
       image: this.editForm.value.image,
-      price: Number(this.editForm.value.price),
+      price: parseInt(<string>this.editForm.value.price),
       description: this.editForm.value.description
     }
     this.productService.updateProduct(updatedProduct).subscribe(
-        (product) => { console.log(product);},
+        () => {alert("Product updated successfully!");
+          this.onLeave();},
         (error) => {console.log(error);}
-    )
+    );
+  }
+
+  onLeave() : void
+  {
+    this.getProductSubscription?.unsubscribe();
+    this.location.back();
+
   }
 }

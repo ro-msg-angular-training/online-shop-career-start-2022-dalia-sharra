@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {LoginService} from "../services/login.service";
 
 @Injectable({
@@ -12,13 +12,13 @@ export class AuthGuard implements CanActivate {
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean | UrlTree {
+    state: RouterStateSnapshot): boolean {
     const url: string = state.url;
 
     return this.checkLogin(url);
   }
 
-  checkLogin(url: string) : true | UrlTree{
+  checkLogin(url: string) : boolean {
     if (this.loginService.isLoggedIn()) {
       return true;
     }
@@ -26,6 +26,7 @@ export class AuthGuard implements CanActivate {
     this.loginService.redirectUrl = url;
 
     // Redirect to the login page
-    return this.router.parseUrl('/login');
+    this.router.navigateByUrl('/login');
+    return false;
   }
 }

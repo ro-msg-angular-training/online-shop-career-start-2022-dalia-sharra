@@ -3,13 +3,12 @@ import {HttpClient} from "@angular/common/http";
 import {Observable, tap} from "rxjs";
 import {User} from "../model/user";
 import {Credentials} from "../model/credentials";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-
-  loginURL = 'http://localhost:3000/login';
 
   loggedUser: User | undefined;
 
@@ -20,7 +19,7 @@ export class LoginService {
 
   login(credentials: Credentials) : Observable<User>
   {
-    return this.http.post<User>(this.loginURL, credentials).pipe(tap((user) => this.loggedUser = user));
+    return this.http.post<User>(environment.loginURL, credentials).pipe(tap((user) => this.loggedUser = user));
   }
 
   isLoggedIn() : boolean{
@@ -29,11 +28,17 @@ export class LoginService {
 
   isAdmin() : boolean
   {
-    return this.loggedUser?.roles.includes("admin") == true;
+    return this.loggedUser?.roles.includes("admin") === true;
   }
 
   isCostumer() : boolean
   {
-    return this.loggedUser?.roles.includes("customer") == true;
+    return this.loggedUser?.roles.includes("customer") === true;
+  }
+
+  getUsername() : string {
+    if(this.loggedUser)
+      return this.loggedUser.username;
+    else return "";
   }
 }

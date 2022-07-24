@@ -11,7 +11,7 @@
     <td>Price</td>
     <td></td>
   </tr>
-  <tr *ngFor="let product of products">
+  <tr *ngFor="let product of (allProducts$ | async)">
     <td>{{product.category}}</td>
     <td>{{product.name}}</td>
     <td>{{product.price}} RON</td>

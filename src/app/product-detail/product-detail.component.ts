@@ -5,6 +5,7 @@ import {ProductsService} from "../services/products.service";
 import { Location } from '@angular/common';
 import {OrderService} from "../services/order.service";
 import {LoginService} from "../services/login.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-product-detail',
@@ -13,44 +14,56 @@ import {LoginService} from "../services/login.service";
 })
 export class ProductDetailComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location, private orderService: OrderService, private  loginService: LoginService) { }
-
   product : Product | undefined;
 
-  isAdmin = this.loginService.isAdmin();
+  isAdmin : boolean | undefined;
 
-  isCostumer = this.loginService.isCostumer();
+  isCostumer : boolean | undefined;
+
+  private getProductSubscription: Subscription | undefined;
+
+  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location, private orderService: OrderService, private  loginService: LoginService) { }
 
   ngOnInit(): void {
     this.getProduct();
+    this.isAdmin = this.loginService.isAdmin();
+
+    this.isCostumer = this.loginService.isCostumer();
   }
 
-  getProductId()
+  getProductId() : number
   {
-    return Number(this.route.snapshot.paramMap.get('id'));
+    return parseInt(<string>this.route.snapshot.paramMap.get('id'));
   }
 
   getProduct(): void {
-    this.productService.getProductById(this.getProductId())
+    this.getProductSubscription = this.productService.getProductById(this.getProductId())
       .subscribe((product) => {this.product = product;},
       (error) => {console.log(error);}
-    )
+    );
   }
 
-  addToCart() {
+  addToCart() : void {
     if(this.product)
       this.orderService.updateOrder(this.product);
     alert("Product added to the shopping cart!");
   }
 
-  deleteProduct() {
+  deleteProduct() : void{
     this.productService.deleteProduct(this.getProductId())
       .subscribe(() => {
           alert("Product deleted successfully!");
+          this.onLeave();
         },
         (error) => {console.log(error);}
-      )
+      );
+  }
+
+  onLeave() : void
+  {
+    this.getProductSubscription?.unsubscribe();
     this.location.back();
+
   }
 
 }

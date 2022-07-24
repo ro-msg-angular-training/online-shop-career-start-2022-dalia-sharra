@@ -4,6 +4,7 @@ import {LoginService} from "../services/login.service";
 import {Router} from "@angular/router";
 import {User} from "../model/user";
 import {Credentials} from "../model/credentials";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -19,26 +20,34 @@ export class LoginComponent implements OnInit {
 
   user : User | undefined;
 
+  loginSubscription : Subscription | undefined;
+
   constructor(private loginService : LoginService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  onSubmit() {
+  onSubmit() : void {
     if(this.loginForm.value.username && this.loginForm.value.password) {
       const cred: Credentials = {
         username: this.loginForm.value.username,
         password: this.loginForm.value.password
       };
-      this.loginService.login(cred
+      this.loginSubscription = this.loginService.login(cred
       ).subscribe(
-        (response) => {
-          this.router.navigateByUrl('products');
+        () => {
+          this.onLeave();
         },
         () => {
           alert("Login unsuccessful! Please Retry!");
         }
-      )
+      );
     }
+  }
+
+  onLeave() : void {
+    this.loginSubscription?.unsubscribe();
+    this.router.navigateByUrl('products').then(() => alert("You logged in successfully!"));
+
   }
 }

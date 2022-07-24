@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Product} from "../model/product";
 import {ProductsService} from "../services/products.service";
 import {LoginService} from "../services/login.service";
+import {AppState} from "../store/state/app.state";
+import {selectAllProducts} from "../store/selectors/product.selectors";
+import {loadProducts} from "../store/actions/product.actions";
 
 @Component({
   selector: 'app-products-list',
@@ -10,22 +12,28 @@ import {LoginService} from "../services/login.service";
 })
 export class ProductsListComponent implements OnInit {
 
-  products : Product[] | undefined;
+  //products : Product[] | undefined;
 
-  constructor(private productsService: ProductsService, private loginService : LoginService) { }
+  public allProducts$ = this.store.select(selectAllProducts);
 
-  isAdmin = this.loginService.isAdmin();
+  constructor(private productsService: ProductsService, private loginService : LoginService, private store: Store<AppState>) { }
 
-  isCostumer = this.loginService.isCostumer();
+  isAdmin : boolean | undefined;
+
+  isCostumer : boolean | undefined;
 
   ngOnInit(): void {
-    this.getProducts();
+    //this.getProducts();
+    this.store.dispatch(loadProducts());
+    this.isAdmin = this.loginService.isAdmin();
+
+    this.isCostumer = this.loginService.isCostumer();
   }
 
-  private getProducts()
+  /*private getProducts()
   {
     this.productsService.getAllProducts().
       subscribe((data) => {this.products = data;},
       (error) => {console.log(error);});
-  }
+  }*/
 }

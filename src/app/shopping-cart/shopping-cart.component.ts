@@ -3,7 +3,8 @@ import {Order} from "../model/order";
 import {ProductsService} from "../services/products.service";
 import {OrderedProduct} from "../model/orderedProduct";
 import {OrderService} from "../services/order.service";
-import { ProductIdQuantity } from '../model/ProductIdQuantity';
+import { ProductIdQuantity } from '../model/product-id-quantity';
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-shopping-cart',
@@ -16,7 +17,7 @@ export class ShoppingCartComponent implements OnInit {
 
   orderedProducts: OrderedProduct[] = [];
 
-  constructor(private productService: ProductsService, private orderService: OrderService) {
+  constructor(private productService: ProductsService, private orderService: OrderService, private location: Location) {
   }
 
   ngOnInit(): void {
@@ -24,7 +25,7 @@ export class ShoppingCartComponent implements OnInit {
     this.getProducts();
   }
 
-  getProducts() {
+  getProducts() : void{
     let prod: ProductIdQuantity;
     if (this.order) {
       for (let index in this.order.products) {
@@ -38,16 +39,18 @@ export class ShoppingCartComponent implements OnInit {
               quantity: prod.quantity
             })
           }
-        )
+        );
       }
     }
   }
 
-  sendOrder() {
+  sendOrder() : void {
     if (this.order) {
       this.orderService.sendOrder(this.order).subscribe(
-        (response) => {
-          console.log(response);
+        () => {
+          alert("Your order has been placed!");
+          this.orderedProducts = [];
+          this.location.back();
         },
         (error) => {
           console.log(error);

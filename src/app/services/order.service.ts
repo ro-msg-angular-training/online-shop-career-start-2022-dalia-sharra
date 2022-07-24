@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
 import {Order} from "../model/order";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
 import {Product} from "../model/product";
-import {ProductIdQuantity} from "../model/ProductIdQuantity";
+import {ProductIdQuantity} from "../model/product-id-quantity";
+import {LoginService} from "./login.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
-  private orderURL = "http://localhost:3000/orders";
-
   private order : Order | undefined;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private loginService: LoginService) { }
 
-  getOrder()
+  getOrder() : Order | undefined
   {
     return this.order;
   }
 
-  sendOrder(order: Order) : Observable<unknown> {
-    return this.http.post<Order>(this.orderURL, order);
+  sendOrder(order: Order) {
+    return this.http.post(environment.orderURL, order, {responseType: 'text'});
   }
 
-  updateOrder(product: Product) {
+  updateOrder(product: Product) : void{
     if (this.order) {
       let found = false;
       let prod: ProductIdQuantity;
@@ -43,7 +42,7 @@ export class OrderService {
         })
       }
     } else {
-      this.order = {customer: "doej", products: [{productId: product.id, quantity: 1}]}
+      this.order = {customer: this.loginService.getUsername(), products: [{productId: product.id, quantity: 1}]}
     }
   }
 }

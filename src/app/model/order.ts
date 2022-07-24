@@ -1,4 +1,4 @@
-import {ProductIdQuantity} from "./ProductIdQuantity";
+import {ProductIdQuantity} from "./product-id-quantity";
 
 export interface Order
 {

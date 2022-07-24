@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ProductsService} from "../services/products.service";
+import {Subscription} from "rxjs";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-product-add',
@@ -16,34 +18,36 @@ export class ProductAddComponent implements OnInit {
     description: new FormControl('', Validators.required)
   });
 
-  constructor(private productService: ProductsService) { }
+  private addSubscription: Subscription | undefined;
+
+  constructor(private productService: ProductsService, private location: Location) { }
 
   ngOnInit(): void {
   }
 
-  refreshForm() {
-    this.addForm.setValue({
-      name: "",
-      category: "",
-      image: "",
-      price: "",
-      description: ""
-    });
+  onSubmit() : void {
+    if ( this.addForm.value.name && this.addForm.value.price && this.addForm.value.category && this.addForm.value.image && this.addForm.value.description) {
+      const newProduct = {
+        name: this.addForm.value.name,
+        category: this.addForm.value.category,
+        image: this.addForm.value.image,
+        price: parseInt(this.addForm.value.price),
+        description: this.addForm.value.description
+      }
+      this.addSubscription = this.productService.addProduct(newProduct).subscribe(
+        () => {
+          alert("Product added successfully!");
+          this.addForm.reset();
+          this.onLeave();
+        },
+        (error) => {
+          console.log(error);
+        });
+    }
   }
 
-  onSubmit() {
-    let newProduct = {
-      name: this.addForm.value.name,
-      category: this.addForm.value.category,
-      image: this.addForm.value.image,
-      price: Number(this.addForm.value.price),
-      description: this.addForm.value.description
-    }
-    this.productService.addProduct(newProduct).subscribe(
-      (product) => { console.log(product);
-        alert("Product added successfully!");
-        this.refreshForm();},
-      (error) => {console.log(error);}
-    )
+  onLeave() : void{
+      this.addSubscription?.unsubscribe();
+      this.location.back();
   }
 }
