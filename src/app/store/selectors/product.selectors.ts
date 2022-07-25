@@ -8,3 +8,9 @@ export const selectAllProducts = createSelector(
   selectProducts,
   (state: ProductState) => state.products
 );
+
+export const selectProduct = createSelector(
+  selectProducts,
+  (state: ProductState) => state.selectedProduct
+);
+

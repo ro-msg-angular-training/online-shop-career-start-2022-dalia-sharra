@@ -5,6 +5,10 @@ import {ProductsService} from "../services/products.service";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import { Location } from '@angular/common';
+import {Store} from "@ngrx/store";
+import {AppState} from "../store/state/app.state";
+import {getProduct, updateProduct} from "../store/actions/product.actions";
+import {selectProduct} from "../store/selectors/product.selectors";
 
 
 @Component({
@@ -26,7 +30,7 @@ export class ProductEditComponent implements OnInit {
 
   private getProductSubscription: Subscription | undefined;
 
-  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location) { }
+  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location, private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.getProductById();
@@ -39,10 +43,8 @@ export class ProductEditComponent implements OnInit {
 
   getProductById() : void
   {
-    this.getProductSubscription = this.productService.getProductById(this.getProductId())
-      .subscribe((product) => {this.product = product; this.setForm();},
-        (error) => {console.log(error);}
-      )
+    this.store.dispatch(getProduct({id: this.getProductId()}));
+    this.getProductSubscription = this.store.select(selectProduct).subscribe((product) => {this.product = product; this.setForm()});
   }
 
   setForm() : void
@@ -61,25 +63,24 @@ export class ProductEditComponent implements OnInit {
   }
 
   onSubmit() : void {
-    const updatedProduct = {
-      id: this.getProductId(),
-      name: this.editForm.value.name,
-      category: this.editForm.value.category,
-      image: this.editForm.value.image,
-      price: parseInt(<string>this.editForm.value.price),
-      description: this.editForm.value.description
+    if (this.editForm.value.name && this.editForm.value.price && this.editForm.value.category && this.editForm.value.image && this.editForm.value.description) {
+      const updatedProduct: Product = {
+        id: this.getProductId(),
+        name: this.editForm.value.name,
+        category: this.editForm.value.category,
+        image: this.editForm.value.image,
+        price: parseInt(<string>this.editForm.value.price),
+        description: this.editForm.value.description
+      }
+      this.store.dispatch(updateProduct({product : updatedProduct}));
+      alert("Product updated successfully!");
+      this.onLeave();
     }
-    this.productService.updateProduct(updatedProduct).subscribe(
-        () => {alert("Product updated successfully!");
-          this.onLeave();},
-        (error) => {console.log(error);}
-    );
   }
 
   onLeave() : void
   {
     this.getProductSubscription?.unsubscribe();
     this.location.back();
-
   }
 }

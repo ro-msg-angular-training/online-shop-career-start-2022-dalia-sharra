@@ -29,10 +29,10 @@ export class ProductsService {
     return this.http.delete(url);
   }
 
-  updateProduct(product: any) : Observable<unknown>
+  updateProduct(product: Product)
   {
     const url = `${environment.productsURL}/${product.id}`;
-    return this.http.put<Product>(url, product);
+    return this.http.put(url, product, {responseType: 'text'});
   }
 
   addProduct(product: any) : Observable<Product> {

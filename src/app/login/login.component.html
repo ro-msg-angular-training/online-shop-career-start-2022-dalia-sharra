@@ -1,5 +1,5 @@
 <h1>Login</h1>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="loginForm" (submit)="onSubmit()">
 
   <label for="username">Username: </label>
   <input id="username" type="text" formControlName="username">
@@ -8,5 +8,5 @@
   <input id="password" type="password" formControlName="password">
   <br>
 
-  <button type="submit" [disabled]="!loginForm.valid">LOG IN</button>
+  <button type="submit" mat-raised-button color="accent" [disabled]="!loginForm.valid">LOG IN</button>
 </form>

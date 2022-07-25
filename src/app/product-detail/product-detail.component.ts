@@ -6,6 +6,11 @@ import { Location } from '@angular/common';
 import {OrderService} from "../services/order.service";
 import {LoginService} from "../services/login.service";
 import {Subscription} from "rxjs";
+import {Store} from "@ngrx/store";
+import {AppState} from "../store/state/app.state";
+import {getProduct, removeProduct} from "../store/actions/product.actions";
+import {selectProduct} from "../store/selectors/product.selectors";
+import {selectAdmin, selectCustomer} from "../store/selectors/login.selectors";
 
 @Component({
   selector: 'app-product-detail',
@@ -18,17 +23,17 @@ export class ProductDetailComponent implements OnInit {
 
   isAdmin : boolean | undefined;
 
-  isCostumer : boolean | undefined;
+  isCustomer : boolean | undefined;
 
   private getProductSubscription: Subscription | undefined;
 
-  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location, private orderService: OrderService, private  loginService: LoginService) { }
+  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location,
+              private orderService: OrderService, private  loginService: LoginService, private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.getProduct();
-    this.isAdmin = this.loginService.isAdmin();
-
-    this.isCostumer = this.loginService.isCostumer();
+    this.store.select(selectAdmin).subscribe((response) => {this.isAdmin = response});
+    this.store.select(selectCustomer).subscribe((response) => {this.isCustomer = response});
   }
 
   getProductId() : number
@@ -37,10 +42,8 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getProduct(): void {
-    this.getProductSubscription = this.productService.getProductById(this.getProductId())
-      .subscribe((product) => {this.product = product;},
-      (error) => {console.log(error);}
-    );
+    this.store.dispatch(getProduct({id : this.getProductId()}));
+    this.getProductSubscription = this.store.select(selectProduct).subscribe((product) => {this.product = product;});
   }
 
   addToCart() : void {
@@ -50,20 +53,15 @@ export class ProductDetailComponent implements OnInit {
   }
 
   deleteProduct() : void{
-    this.productService.deleteProduct(this.getProductId())
-      .subscribe(() => {
-          alert("Product deleted successfully!");
-          this.onLeave();
-        },
-        (error) => {console.log(error);}
-      );
+    this.store.dispatch(removeProduct({id: this.getProductId()}));
+    alert("Product deleted successfully!");
+    this.onLeave();
   }
 
   onLeave() : void
   {
     this.getProductSubscription?.unsubscribe();
     this.location.back();
-
   }
 
 }

@@ -18,6 +18,12 @@ import { ProductEditComponent } from './product-edit/product-edit.component';
 import { ReactiveFormsModule } from "@angular/forms";
 import { ProductAddComponent } from './product-add/product-add.component';
 import { LoginComponent } from './login/login.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTableModule} from "@angular/material/table";
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {LoginEffects} from "./store/effects/login.effects";
+import {loginReducers} from "./store/reducers/login.reducers";
 
 @NgModule({
   declarations: [
@@ -29,20 +35,24 @@ import { LoginComponent } from './login/login.component';
     ProductAddComponent,
     LoginComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-      StoreModule.forRoot({products: productReducers}),
-      StoreDevtoolsModule.instrument({
-        maxAge: 25,
-        logOnly: environment.production,
-      }),
-      EffectsModule.forRoot([ProductEffects]),
-      !environment.production ? StoreDevtoolsModule.instrument() : [],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    StoreModule.forRoot({products: productReducers, loginState: loginReducers}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+    EffectsModule.forRoot([ProductEffects, LoginEffects]),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatButtonModule,
+    MatFormFieldModule,
 
-    ],
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
