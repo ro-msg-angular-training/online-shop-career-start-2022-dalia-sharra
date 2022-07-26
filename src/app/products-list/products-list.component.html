@@ -23,16 +23,4 @@
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="columnsToDisplay">
   <tr mat-row *matRowDef="let row; columns: columnsToDisplay">
-  <!--<tr id="head-row">
-    <td>Category</td>
-    <td>Product Name</td>
-    <td>Price</td>
-    <td></td>
-  </tr>
-  <tr *ngFor="let product of (allProducts$ | async)">
-    <td>{{product.category}}</td>
-    <td>{{product.name}}</td>
-    <td>{{product.price}} RON</td>
-    <td id="detail-btn"> <button routerLink="/detail/{{product.id}}"> Details</button></td>
-  </tr>-->
 </table>

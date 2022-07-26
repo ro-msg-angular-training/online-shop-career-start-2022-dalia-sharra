@@ -28,7 +28,6 @@ export class LoginEffects {
     )
   );
 
-
   loginSuccess$ = createEffect(
     () =>
       this.actions$.pipe(

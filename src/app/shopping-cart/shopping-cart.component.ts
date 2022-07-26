@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {Order} from "../model/order";
-import {ProductsService} from "../services/products.service";
 import {OrderedProduct} from "../model/orderedProduct";
-import {OrderService} from "../services/order.service";
 import { ProductIdQuantity } from '../model/product-id-quantity';
 import {Location} from "@angular/common";
+import {selectAllOrderProducts} from "../store/selectors/order.selectors";
+import {AppState} from "../store/state/app.state";
+import {Store} from "@ngrx/store";
+import {selectProductByID} from "../store/selectors/product.selectors";
+import {take} from "rxjs";
+import {submitOrder} from "../store/actions/order.actions";
 
 @Component({
   selector: 'app-shopping-cart',
@@ -13,49 +16,43 @@ import {Location} from "@angular/common";
 })
 export class ShoppingCartComponent implements OnInit {
 
-  private order: Order | undefined;
-
   orderedProducts: OrderedProduct[] = [];
 
-  constructor(private productService: ProductsService, private orderService: OrderService, private location: Location) {
+  products : ProductIdQuantity[] = [];
+
+  columnsToDisplay = ['category', 'productName', 'price', 'quantity'];
+
+  constructor(private location: Location, private store: Store<AppState>) {
   }
 
   ngOnInit(): void {
-    this.order = this.orderService.getOrder();
-    this.getProducts();
+    this.store.select(selectAllOrderProducts).pipe(take(1)).subscribe((response) => {
+      this.products = response;
+      console.log(this.products);
+      this.getProducts();
+    });
   }
 
+
   getProducts() : void{
-    let prod: ProductIdQuantity;
-    if (this.order) {
-      for (let index in this.order.products) {
-        prod = this.order.products[index];
-        this.productService.getProductById(prod.productId).subscribe(
-          (product) => {
+    if (this.products) {
+      for (let prod of this.products) {
+        this.store.select(selectProductByID(prod.productId)).pipe(take(1)).subscribe((product) => {
+          if (product) {
             this.orderedProducts.push({
               name: product.name,
               category: product.category,
               price: product.price,
               quantity: prod.quantity
-            })
+            });
           }
-        );
+        });
       }
     }
   }
 
   sendOrder() : void {
-    if (this.order) {
-      this.orderService.sendOrder(this.order).subscribe(
-        () => {
-          alert("Your order has been placed!");
-          this.orderedProducts = [];
-          this.location.back();
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    }
+    this.store.dispatch(submitOrder({products : this.products}));
+    this.orderedProducts = [];
   }
 }

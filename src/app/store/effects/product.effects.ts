@@ -1,7 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {Store} from "@ngrx/store";
-import {AppState} from "../state/app.state";
 import {ProductsService} from "../../services/products.service";
 import {
   addProduct, addProductFailure, addProductSuccess, getProduct, getProductFailure, getProductSuccess,
@@ -10,27 +8,22 @@ import {
   loadProductsSuccess,
   removeProduct, removeProductFailure, removeProductSuccess, updateProduct, updateProductFailure, updateProductSuccess
 } from "../actions/product.actions";
-import {catchError, from, map, of, switchMap} from "rxjs";
+import {catchError, from, map, mergeMap, of, switchMap, tap} from "rxjs";
 import {Product} from "../../model/product";
 
 @Injectable()
 export class ProductEffects {
   constructor(
     private actions$: Actions,
-    private store: Store<AppState>,
     private productService: ProductsService
   ) {}
 
-  // Run this code when a loadProducts action is dispatched
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadProducts),
       switchMap(() =>
-        // Call the getProducts method, convert it to an observable
         from(this.productService.getAllProducts()).pipe(
-          // Take the returned value and return a new success action containing the products
           map((products) => loadProductsSuccess({ products: products })),
-          // Or... if it errors return a new failure action containing the error
           catchError((error) => of(loadProductsFailure({ error })))
         )
       )
@@ -49,6 +42,28 @@ export class ProductEffects {
       )
   );
 
+  saveProductSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(addProductSuccess),
+        tap(() => {
+          alert('Product added successfully!')
+        })
+      ),
+    { dispatch: false }
+  );
+
+  saveProductFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(addProductFailure),
+        tap(() => {
+          alert('Something went wrong!')
+        })
+      ),
+    { dispatch: false }
+  );
+
   removeProduct$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -59,6 +74,28 @@ export class ProductEffects {
             catchError((error) => of(removeProductFailure({error})))
           )))
       )
+  );
+
+  removeProductSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(removeProductSuccess),
+        tap(() => {
+          alert('Product deleted successfully!')
+        })
+      ),
+    { dispatch: false }
+  );
+
+  removeProductFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(removeProductFailure),
+        tap(() => {
+          alert('Something went wrong!')
+        })
+      ),
+    { dispatch: false }
   );
 
   updateProduct$ = createEffect(
@@ -73,13 +110,35 @@ export class ProductEffects {
       )
   );
 
+  updateProductSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateProductSuccess),
+        tap(() => {
+          alert('Product updated successfully!')
+        })
+      ),
+    { dispatch: false }
+  );
+
+  updateProductFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateProductFailure),
+        tap(() => {
+          alert('Something went wrong!')
+        })
+      ),
+    { dispatch: false }
+  );
+
   getProduct$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(getProduct),
-        switchMap((action) => from(this.productService.getProductById(action.id)
+        mergeMap((action) => from(this.productService.getProductById(action.id)
           .pipe(
-            map((product: Product) => getProductSuccess({product})),
+            map((product: Product) => getProductSuccess({product: product})),
             catchError((error) => of(getProductFailure({error})))
           )))
       )

@@ -14,3 +14,8 @@ export const selectProduct = createSelector(
   (state: ProductState) => state.selectedProduct
 );
 
+export const selectProductByID = (id : number) => createSelector(
+  selectProducts,
+  (state: ProductState) => state.products.find(prod => prod.id === id)
+);
+

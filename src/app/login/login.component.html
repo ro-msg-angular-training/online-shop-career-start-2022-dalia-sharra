@@ -1,12 +1,16 @@
-<h1>Login</h1>
-<form [formGroup]="loginForm" (submit)="onSubmit()">
-
-  <label for="username">Username: </label>
-  <input id="username" type="text" formControlName="username">
-  <br>
-  <label for="password">Password: </label>
-  <input id="password" type="password" formControlName="password">
-  <br>
-
-  <button type="submit" mat-raised-button color="accent" [disabled]="!loginForm.valid">LOG IN</button>
-</form>
+<div>
+  <h1>Login</h1>
+  <form [formGroup]="loginForm" (submit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput type="username" placeholder="username" formControlName="username">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input matInput type="password" placeholder="password" formControlName="password">
+    </mat-form-field>
+    <br>
+    <button type="submit" mat-raised-button color="accent" [disabled]="!loginForm.valid">LOG IN</button>
+  </form>
+</div>

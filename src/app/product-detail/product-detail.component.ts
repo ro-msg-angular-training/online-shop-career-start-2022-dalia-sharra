@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {Product} from "../model/product";
 import {ActivatedRoute} from "@angular/router";
-import {ProductsService} from "../services/products.service";
 import { Location } from '@angular/common';
-import {OrderService} from "../services/order.service";
-import {LoginService} from "../services/login.service";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import {AppState} from "../store/state/app.state";
 import {getProduct, removeProduct} from "../store/actions/product.actions";
 import {selectProduct} from "../store/selectors/product.selectors";
 import {selectAdmin, selectCustomer} from "../store/selectors/login.selectors";
+import {updateOrder} from "../store/actions/order.actions";
+import {MatDialog} from "@angular/material/dialog";
+import {SafeDeleteDialogComponent} from "../safe-delete-dialog/safe-delete-dialog.component";
 
 @Component({
   selector: 'app-product-detail',
@@ -27,8 +27,7 @@ export class ProductDetailComponent implements OnInit {
 
   private getProductSubscription: Subscription | undefined;
 
-  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location,
-              private orderService: OrderService, private  loginService: LoginService, private store: Store<AppState>) { }
+  constructor(private route: ActivatedRoute, private location: Location, private store: Store<AppState>, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getProduct();
@@ -48,13 +47,11 @@ export class ProductDetailComponent implements OnInit {
 
   addToCart() : void {
     if(this.product)
-      this.orderService.updateOrder(this.product);
-    alert("Product added to the shopping cart!");
+      this.store.dispatch(updateOrder({product: this.product}));
   }
 
   deleteProduct() : void{
     this.store.dispatch(removeProduct({id: this.getProductId()}));
-    alert("Product deleted successfully!");
     this.onLeave();
   }
 
@@ -64,4 +61,18 @@ export class ProductDetailComponent implements OnInit {
     this.location.back();
   }
 
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    const dialogRef = this.dialog.open(SafeDeleteDialogComponent, {
+      data: { name: this.product?.name },
+      width: '250px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result === true)
+      {
+        this.deleteProduct();
+      }
+    });
+  }
 }

@@ -12,7 +12,6 @@ export class LoginService {
 
   loggedUser: User | undefined;
 
-  // store the URL so we can redirect after logging in
   redirectUrl: string | null = null;
 
   constructor(private http: HttpClient) { }
@@ -26,19 +25,10 @@ export class LoginService {
     return this.loggedUser!=undefined;
   }
 
-  isAdmin() : boolean
-  {
-    return this.loggedUser?.roles.includes("admin") === true;
-  }
-
-  isCostumer() : boolean
-  {
-    return this.loggedUser?.roles.includes("customer") === true;
-  }
-
   getUsername() : string {
     if(this.loggedUser)
       return this.loggedUser.username;
     else return "";
+
   }
 }

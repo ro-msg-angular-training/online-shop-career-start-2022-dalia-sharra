@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {Product} from "../model/product";
-import {ProductsService} from "../services/products.service";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import { Location } from '@angular/common';
@@ -30,7 +29,7 @@ export class ProductEditComponent implements OnInit {
 
   private getProductSubscription: Subscription | undefined;
 
-  constructor(private route: ActivatedRoute, private productService: ProductsService, private location: Location, private store: Store<AppState>) { }
+  constructor(private route: ActivatedRoute, private location: Location, private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.getProductById();
@@ -73,7 +72,6 @@ export class ProductEditComponent implements OnInit {
         description: this.editForm.value.description
       }
       this.store.dispatch(updateProduct({product : updatedProduct}));
-      alert("Product updated successfully!");
       this.onLeave();
     }
   }
