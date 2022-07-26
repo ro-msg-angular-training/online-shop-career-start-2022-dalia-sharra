@@ -3,37 +3,32 @@ import {HttpClient} from "@angular/common/http";
 import {Observable, tap} from "rxjs";
 import {User} from "../model/user";
 import {Credentials} from "../model/credentials";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  loginURL = 'http://localhost:3000/login';
-
   loggedUser: User | undefined;
 
-  // store the URL so we can redirect after logging in
   redirectUrl: string | null = null;
 
   constructor(private http: HttpClient) { }
 
   login(credentials: Credentials) : Observable<User>
   {
-    return this.http.post<User>(this.loginURL, credentials).pipe(tap((user) => this.loggedUser = user));
+    return this.http.post<User>(environment.loginURL, credentials).pipe(tap((user) => this.loggedUser = user));
   }
 
   isLoggedIn() : boolean{
     return this.loggedUser!=undefined;
   }
 
-  isAdmin() : boolean
-  {
-    return this.loggedUser?.roles.includes("admin") == true;
-  }
+  getUsername() : string {
+    if(this.loggedUser)
+      return this.loggedUser.username;
+    else return "";
 
-  isCostumer() : boolean
-  {
-    return this.loggedUser?.roles.includes("customer") == true;
   }
 }

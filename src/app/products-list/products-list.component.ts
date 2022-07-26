@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Product} from "../model/product";
-import {ProductsService} from "../services/products.service";
-import {LoginService} from "../services/login.service";
+import {AppState} from "../store/state/app.state";
+import {selectAllProducts} from "../store/selectors/product.selectors";
+import {loadProducts} from "../store/actions/product.actions";
+import {Store} from "@ngrx/store";
+import {selectAdmin, selectCustomer} from "../store/selectors/login.selectors";
 
 @Component({
   selector: 'app-products-list',
@@ -10,22 +12,20 @@ import {LoginService} from "../services/login.service";
 })
 export class ProductsListComponent implements OnInit {
 
-  products : Product[] | undefined;
+  public allProducts$ = this.store.select(selectAllProducts);
 
-  constructor(private productsService: ProductsService, private loginService : LoginService) { }
+  constructor(private store: Store<AppState>) { }
 
-  isAdmin = this.loginService.isAdmin();
+  isAdmin : boolean | undefined;
 
-  isCostumer = this.loginService.isCostumer();
+  isCustomer : boolean | undefined;
+
+  columnsToDisplay = ['category', 'productName', 'price', 'detailButton'];
 
   ngOnInit(): void {
-    this.getProducts();
+    this.store.dispatch(loadProducts());
+    this.store.select(selectAdmin).subscribe((response) => {this.isAdmin = response});
+    this.store.select(selectCustomer).subscribe((response) => {this.isCustomer = response});
   }
 
-  private getProducts()
-  {
-    this.productsService.getAllProducts().
-      subscribe((data) => {this.products = data;},
-      (error) => {console.log(error);});
-  }
 }

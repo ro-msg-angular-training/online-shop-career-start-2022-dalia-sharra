@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {LoginService} from "../services/login.service";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {User} from "../model/user";
 import {Credentials} from "../model/credentials";
+import {AppState} from "../store/state/app.state";
+import {Store} from "@ngrx/store";
+import {loginUser} from "../store/actions/login.actions";
 
 @Component({
   selector: 'app-login',
@@ -17,28 +19,22 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
+
   user : User | undefined;
 
-  constructor(private loginService : LoginService, private router: Router) { }
+  constructor(private fb: FormBuilder, private router: Router, private store: Store<AppState>) { }
 
   ngOnInit(): void {
   }
 
-  onSubmit() {
+  onSubmit() : void {
     if(this.loginForm.value.username && this.loginForm.value.password) {
       const cred: Credentials = {
         username: this.loginForm.value.username,
         password: this.loginForm.value.password
       };
-      this.loginService.login(cred
-      ).subscribe(
-        (response) => {
-          this.router.navigateByUrl('products');
-        },
-        () => {
-          alert("Login unsuccessful! Please Retry!");
-        }
-      )
+      this.store.dispatch(loginUser({credentials: cred}));
     }
   }
+
 }

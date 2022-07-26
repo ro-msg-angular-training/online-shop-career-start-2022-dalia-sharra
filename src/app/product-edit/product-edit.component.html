@@ -1,21 +1,33 @@
-<h1 *ngIf="product">Edit: {{product.name}}</h1>
-<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+<div>
+  <h1 *ngIf="product">Edit: {{product.name}}</h1>
+  <form [formGroup]="editForm">
 
-  <label for="name">Name: </label>
-  <input id="name" type="text" formControlName="name">
-  <br>
-  <label for="category">Category: </label>
-  <input id="category" type="text" formControlName="category">
-  <br>
-  <label for="image">Image: </label>
-  <input id="image" type="text" formControlName="image">
-  <br>
-  <label for="price">Price: </label>
-  <input id="price" type="text" formControlName="price">
-  <br>
-  <input id="description" type="text" formControlName="description">
-
-  <br>
-  <button type="submit" [disabled]="!editForm.valid">SAVE</button>
-  <button (click)="setForm()">CANCEL</button>
-</form>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput id="name" type="text" formControlName="name">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <input matInput id="category" type="text" formControlName="category">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Image</mat-label>
+      <input matInput id="image" type="text" formControlName="image">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Price</mat-label>
+      <input matInput id="price" type="text" formControlName="price">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <input matInput id="description" type="text" formControlName="description">
+    </mat-form-field>
+    <br>
+    <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="!editForm.valid">SAVE</button>
+    <button mat-raised-button (click)="setForm()">CANCEL</button>
+  </form>
+</div>
